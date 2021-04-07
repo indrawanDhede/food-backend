@@ -4,19 +4,18 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Midtrans\Config;
+use Midtrans\Snap;
 use Midtrans\Notification;
 
 class MidtransController extends Controller
 {
     /**
-     * @return JsonResponse
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function callback(): JsonResponse
+    public function callback(Request $request)
     {
         // Set konfigurasi midtrans
         Config::$serverKey = config('services.midtrans.serverKey');
@@ -64,71 +63,74 @@ class MidtransController extends Controller
         }
 
         // Simpan transaksi
-        return $transaction->save();
+        $transaction->save();
 
         // Kirimkan email
-//        if ($transaction)
-//        {
-//            if($status == 'capture' && $fraud == 'accept' )
-//            {
-//                //
-//            }
-//            else if ($status == 'settlement')
-//            {
-//                //
-//            }
-//            else if ($status == 'success')
-//            {
-//                //
-//            }
-//            else if($status == 'capture' && $fraud == 'challenge' )
-//            {
-//                return response()->json([
-//                    'meta' => [
-//                        'code' => 200,
-//                        'message' => 'Midtrans Payment Challenge'
-//                    ]
-//                ]);
-//            }
-//            else
-//            {
-//                return response()->json([
-//                    'meta' => [
-//                        'code' => 200,
-//                        'message' => 'Midtrans Payment not Settlement'
-//                    ]
-//                ]);
-//            }
-//
-//            return response()->json([
-//                'meta' => [
-//                    'code' => 200,
-//                    'message' => 'Midtrans Notification Success'
-//                ]
-//            ]);
-//        }
+        if ($transaction)
+        {
+            if($status == 'capture' && $fraud == 'accept' )
+            {
+                //
+            }
+            else if ($status == 'settlement')
+            {
+                //
+            }
+            else if ($status == 'success')
+            {
+                //
+            }
+            else if($status == 'capture' && $fraud == 'challenge' )
+            {
+                return response()->json([
+                    'meta' => [
+                        'code' => 200,
+                        'message' => 'Midtrans Payment Challenge'
+                    ]
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'meta' => [
+                        'code' => 200,
+                        'message' => 'Midtrans Payment not Settlement'
+                    ]
+                ]);
+            }
+
+            return response()->json([
+                'meta' => [
+                    'code' => 200,
+                    'message' => 'Midtrans Notification Success'
+                ]
+            ]);
+        }
     }
 
     /**
-     * @return Application|Factory|View
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function success()
+    public function success(Request $request)
     {
         return view('midtrans.success');
     }
 
     /**
-     * @return Application|Factory|View
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function unfinish()
+    public function unfinish(Request $request)
     {
         return view('midtrans.unfinish');
     }
 
     /**
-     * @return Application|Factory|View
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function error()
+    public function error(Request $request)
     {
         return view('midtrans.error');
     }
